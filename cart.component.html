@@ -1,0 +1,94 @@
+<div class="cart-page container-fluid py-5">
+  <div class="row px-md-5">
+    <div class="col-md-7 col-lg-8 card shadow-sm p-4 border-0 mb-4 mb-md-0">
+      <h3 class="fw-semibold text-center mb-5 mt-3">
+        Review Item And Shipping
+      </h3>
+
+      <div *ngIf="(cartItems$ | async)?.length === 0" class="text-center py-5">
+        <p class="text-muted fs-5">Your cart is currently empty.</p>
+        <button class="btn btn-outline-primary" routerLink="/fashion">
+          Continue Shopping
+        </button>
+      </div>
+
+      <div
+        class="item-card d-flex align-items-center mb-4 pb-4 border-bottom position-relative"
+        *ngFor="let item of cartItems$ | async"
+      >
+        <button
+          (click)="onRemoveItem(item.productId)"
+          class="position-absolute top-0 end-0 btn btn-link text-danger p-1"
+        >
+          <i class="bi bi-trash-fill fs-5"></i>
+        </button>
+
+        <img
+          [src]="item.thumbnailImage"
+          [alt]="item.productShortName"
+          class="cart-thumb rounded me-4"
+          style="width: 100px; height: 100px; object-fit: contain"
+        />
+
+        <div class="item-details flex-grow-1">
+          <h5 class="item-name fw-semibold mb-2">
+            {{ item.productShortName }}
+          </h5>
+          <p class="text-muted small mb-3">{{ item.categoryName }}</p>
+
+          <div class="d-flex align-items-center justify-content-between">
+            <div
+              class="quantity-control d-flex align-items-center border rounded-pill"
+            >
+              <button
+                class="btn btn-link py-1 px-3"
+                (click)="onUpdateQuantity(item.productId, item.quantity - 1)"
+              >
+                −
+              </button>
+              <span class="quantity-value px-3 fw-bold">{{
+                item.quantity
+              }}</span>
+              <button
+                class="btn btn-link py-1 px-3"
+                (click)="onUpdateQuantity(item.productId, item.quantity + 1)"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-total text-end ms-4">
+          <p class="price-main fw-bold fs-5 mb-1">
+            {{ item.price | currency: "INR" : "symbol" : "1.2-2" }}
+          </p>
+          <p class="quantity-sub text-muted small">
+            Quantity: {{ item.quantity }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="col-md-5 col-lg-4 d-flex flex-column align-items-center justify-content-center pt-md-5"
+    >
+      <div class="summary-details w-75 text-center mb-5">
+        <p class="total-label text-muted fs-4 fw-light mb-1">Total :</p>
+        <h2 class="total-price fw-semibold text-dark">
+          {{ calculateCartTotal() | currency: "INR" : "symbol" : "1.2-2" }}
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        id="orderbtn"
+        class="btn btn-teal-dark rounded-pill w-75 fw-semibold py-3 fs-5"
+        (click)="onPlaceOrder()"
+        [disabled]="(cartItems$ | async)?.length === 0"
+      >
+        Place Order
+      </button>
+    </div>
+  </div>
+</div>
